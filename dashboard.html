@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Fila Única</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #f5a623;
+      --black: #0a0a0a;
+      --dark: #111;
+      --gray: #1a1a1a;
+      --text: #f0f0f0;
+      --muted: #a0a0a0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--black);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { text-decoration: none; color: inherit; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,.15);
+    }
+    .header-inner {
+      max-width: 1180px; margin: 0 auto; padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .logo-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #ffd700);
+      display: flex; align-items: center; justify-content: center;
+    }
+    nav { display: flex; gap: 18px; color: var(--muted); font-size: .9rem; font-weight: 500; }
+    nav a:hover { color: var(--gold); }
+    nav a.active { color: var(--gold); }
+    .userbox { display: flex; align-items: center; gap: 12px; font-size: .85rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: .85rem;
+      border: none; cursor: pointer; font-family: inherit; color: inherit;
+    }
+    .btn-outline { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); }
+    .btn-primary { background: linear-gradient(135deg, var(--gold), #ffc107); color: #111; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 72px; }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 6px; }
+    .muted { color: var(--muted); }
+    .kpis {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 24px 0 22px;
+    }
+    .kpi {
+      background: var(--gray); border: 1px solid rgba(255,255,255,.06);
+      border-radius: 14px; padding: 18px;
+    }
+    .kpi span { display: block; font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .kpi strong { font-size: 1.35rem; font-weight: 800; color: var(--gold); }
+    .grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 18px; }
+    .card {
+      background: var(--gray); border: 1px solid rgba(255,255,255,.06);
+      border-radius: 16px; padding: 22px;
+    }
+    .card h2 { font-size: 1.05rem; margin-bottom: 16px; color: var(--gold); }
+    .pos {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .pos:last-child { border-bottom: none; }
+    .dots { display: flex; gap: 6px; }
+    .dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #2a2a2a; color: #777; font-size: .7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dot.on { background: var(--gold); color: #111; }
+    .progress {
+      height: 8px; background: #2a2a2a; border-radius: 99px; overflow: hidden; margin: 10px 0 6px;
+    }
+    .progress > i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), #ffd700); }
+    .linkbox {
+      display: flex; gap: 8px; margin-top: 10px;
+    }
+    .linkbox input {
+      flex: 1; background: #0d0d0d; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 10px 12px; color: var(--text); font-size: .85rem;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 8px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.06); }
+    th { color: var(--muted); font-weight: 600; font-size: .75rem; text-transform: uppercase; }
+    .tag {
+      display: inline-block; padding: 3px 8px; border-radius: 99px; font-size: .72rem; font-weight: 700;
+      background: rgba(245,166,35,.15); color: var(--gold);
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    @media (max-width: 900px) {
+      nav { display: none; }
+      .kpis, .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo"><div class="logo-icon">◆</div>Fila Única</a>
+      <nav>
+        <a class="active" href="dashboard.html">Dashboard</a>
+        <a href="afiliados.html">Afiliados</a>
+        <a href="index.html#niveis">Níveis</a>
+      </nav>
+      <div class="userbox">
+        <span id="who">—</span>
+        <button class="btn btn-outline" id="logout">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <h1>Área de membros</h1>
+    <p class="muted" id="hello">Carregando sua posição na fila...</p>
+
+    <div class="kpis">
+      <div class="kpi"><span>Saldo livre</span><strong id="saldo">R$ 0,00</strong></div>
+      <div class="kpi"><span>Bônus patrocinador</span><strong id="bonus">R$ 0,00</strong></div>
+      <div class="kpi"><span>Nível atual</span><strong id="nivel">Bronze</strong></div>
+      <div class="kpi"><span>Posições ativas</span><strong id="posicoes">1</strong></div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <div class="card" style="margin-bottom:18px;">
+          <h2>Suas posições</h2>
+          <div id="positions"></div>
+        </div>
+        <div class="card">
+          <h2>Histórico do par de ciclos</h2>
+          <table>
+            <thead>
+              <tr><th>Ciclo</th><th>Recebido</th><th>Patrocinador</th><th>Reentrada</th><th>Saque</th></tr>
+            </thead>
+            <tbody id="hist"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:18px;">
+          <h2>Link de indicação</h2>
+          <p class="muted" style="font-size:.85rem;">Quem entrar por este link fica abaixo de você.</p>
+          <div class="linkbox">
+            <input id="refLink" readonly>
+            <button class="btn btn-primary" id="copyBtn" type="button">Copiar</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Próximo passo</h2>
+          <p class="muted" id="nextStep" style="font-size:.9rem;"></p>
+          <div class="actions">
+            <a class="btn btn-primary" href="afiliados.html">Ver afiliados</a>
+            <a class="btn btn-outline" href="cadastro.html">Nova entrada</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const LEVELS = {
+      bronze:    { name: 'Bronze',    price: 30,   receive: 80,   sponsor: 10,  reentry: 20,  withdraw: 30,  next: 'Prata' },
+      prata:     { name: 'Prata',     price: 60,   receive: 240,  sponsor: 30,  reentry: 60,  withdraw: 150, next: 'Ouro' },
+      ouro:      { name: 'Ouro',      price: 90,   receive: 360,  sponsor: 66.67, reentry: 90, withdraw: 203.33, next: 'Platina' },
+      platina:   { name: 'Platina',   price: 200,  receive: 800,  sponsor: 133.33, reentry: 200, withdraw: 466.67, next: 'Safira' },
+      safira:    { name: 'Safira',    price: 400,  receive: 1600, sponsor: 266.67, reentry: 400, withdraw: 933.33, next: 'Esmeralda' },
+      esmeralda: { name: 'Esmeralda', price: 800,  receive: 3200, sponsor: 533.33, reentry: 800, withdraw: 1866.67, next: 'Rubi' },
+      rubi:      { name: 'Rubi',      price: 1600, receive: 6400, sponsor: 1066.67, reentry: 1600, withdraw: 3733.33, next: 'Diamante' },
+      diamante:  { name: 'Diamante',  price: 3200, receive: 12800, sponsor: 4266.67, reentry: 3200, withdraw: 5333.33, next: 'Ciclo eterno' }
+    };
+
+    function money(n) {
+      return Number(n).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    const session = JSON.parse(localStorage.getItem('fila_session') || 'null');
+    const user = JSON.parse(localStorage.getItem('fila_user') || 'null');
+
+    if (!session || !user) {
+      window.location.href = 'login.html';
+    } else {
+      const lvlKey = user.nivel || 'bronze';
+      const lvl = LEVELS[lvlKey] || LEVELS.bronze;
+      const filled = Number(localStorage.getItem('fila_cycle') || 1);
+
+      document.getElementById('who').textContent = user.login;
+      document.getElementById('hello').textContent = `Olá, ${user.nome.split(' ')[0]}. Você está no ${lvl.name}.`;
+      document.getElementById('nivel').textContent = lvl.name;
+      document.getElementById('saldo').textContent = money(0);
+      document.getElementById('bonus').textContent = money(0);
+      document.getElementById('posicoes').textContent = '1';
+
+      const origin = location.origin + location.pathname.replace(/dashboard\.html.*/, '');
+      document.getElementById('refLink').value = origin + 'cadastro.html?id=' + encodeURIComponent(user.login);
+
+      const dots = [1,2,3,4].map(n => `<span class="dot ${n <= filled ? 'on' : ''}">${n}</span>`).join('');
+      document.getElementById('positions').innerHTML = `
+        <div class="pos">
+          <div>
+            <strong>${lvl.name} #1</strong>
+            <div class="muted" style="font-size:.8rem;">Fila única · 4/4 em andamento</div>
+          </div>
+          <div class="dots">${dots}</div>
+        </div>
+        <div class="progress"><i style="width:${(filled/4)*100}%"></i></div>
+        <p class="muted" style="font-size:.8rem;">${filled} de 4 recebimentos neste ciclo</p>
+      `;
+
+      document.getElementById('hist').innerHTML = `
+        <tr>
+          <td>1º ciclo (atual)</td>
+          <td>${money(lvl.receive)}</td>
+          <td>${money(lvl.sponsor)}</td>
+          <td>${money(lvl.reentry)}</td>
+          <td>${money(lvl.withdraw)}</td>
+        </tr>
+        <tr>
+          <td>2º ciclo (par)</td>
+          <td colspan="4"><span class="tag">Aguardando conclusão do 1º</span></td>
+        </tr>
+      `;
+
+      document.getElementById('nextStep').textContent =
+        `Faltam ${4 - filled} recebimento(s) para fechar o 4/4 do ${lvl.name}. Depois disso o sistema faz reentrada e reserva o upgrade para ${lvl.next}.`;
+
+      document.getElementById('copyBtn').onclick = async () => {
+        const input = document.getElementById('refLink');
+        try { await navigator.clipboard.writeText(input.value); } catch { input.select(); document.execCommand('copy'); }
+        document.getElementById('copyBtn').textContent = 'Copiado';
+        setTimeout(() => document.getElementById('copyBtn').textContent = 'Copiar', 1500);
+      };
+
+      document.getElementById('logout').onclick = () => {
+        localStorage.removeItem('fila_session');
+        window.location.href = 'login.html';
+      };
+    }
+  </script>
+</body>
+</html>

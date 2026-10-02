@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar senha | Fila Única</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #f5a623;
+      --black: #0a0a0a;
+      --gray: #1a1a1a;
+      --text: #f0f0f0;
+      --muted: #a0a0a0;
+      --danger: #ff6b6b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% -10%, rgba(245, 166, 35, 0.16), transparent),
+        var(--black);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,.15);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #ffd700);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: .95rem;
+      transition: all .2s; cursor: pointer; border: none; font-family: inherit;
+    }
+    .btn-outline { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #ffc107); color: #111; width: 100%;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,166,35,.35); }
+    .wrap { max-width: 440px; margin: 0 auto; padding: 72px 24px 80px; }
+    .card {
+      background: var(--gray);
+      border: 1px solid rgba(245,166,35,.18);
+      border-radius: 20px;
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), #ffd700);
+    }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 6px; }
+    .sub { color: var(--muted); margin-bottom: 24px; font-size: .95rem; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+    .field input {
+      width: 100%; background: #0d0d0d; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 12px 14px; color: var(--text); font-size: .95rem;
+      font-family: inherit; outline: none;
+    }
+    .field input:focus { border-color: var(--gold); }
+    .alert {
+      display: none;
+      background: rgba(255,107,107,.12);
+      border: 1px solid rgba(255,107,107,.35);
+      color: #ffb3b3;
+      padding: 10px 12px; border-radius: 10px; font-size: .85rem; margin-bottom: 16px;
+    }
+    .ok {
+      display: none;
+      background: rgba(245,166,35,.12);
+      border: 1px solid rgba(245,166,35,.35);
+      color: var(--gold);
+      padding: 10px 12px; border-radius: 10px; font-size: .85rem; margin-bottom: 16px;
+    }
+    .alert.show, .ok.show { display: block; }
+    .rules {
+      list-style: none;
+      margin-top: 8px;
+      display: grid;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .rules li::before { content: '○ '; }
+    .rules li.ok { color: var(--gold); }
+    .rules li.ok::before { content: '● '; }
+    .back { text-align: center; margin-top: 20px; color: var(--muted); font-size: 0.9rem; }
+    .back a { color: var(--gold); font-weight: 600; }
+    footer { text-align: center; color: var(--muted); font-size: .85rem; padding-bottom: 32px; }
+    footer a { color: var(--gold); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo"><div class="logo-icon">◆</div>Fila Única</a>
+      <div style="display:flex; gap:10px;">
+        <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
+        <a href="login.html" class="btn btn-outline">Voltar ao login</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <h1>Recuperar senha</h1>
+      <p class="sub">Informe o login ou e-mail da conta. Se existir neste navegador, você redefine a senha.</p>
+
+      <div class="alert" id="alert"></div>
+      <div class="ok" id="ok"></div>
+
+      <form id="findForm">
+        <div class="field">
+          <label for="login">Login ou e-mail</label>
+          <input id="login" type="text" autocomplete="username" placeholder="seuusuario" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Continuar</button>
+      </form>
+
+      <form id="resetForm" class="hidden">
+        <div class="field">
+          <label for="senha">Nova senha</label>
+          <input id="senha" type="password" autocomplete="new-password" placeholder="mínimo 8 caracteres" required>
+          <ul class="rules" id="senhaRules">
+            <li data-rule="len">Mínimo 8 caracteres</li>
+            <li data-rule="lower">1 letra minúscula</li>
+            <li data-rule="upper">1 letra maiúscula</li>
+            <li data-rule="num">1 número</li>
+          </ul>
+        </div>
+        <div class="field">
+          <label for="senha2">Repita a nova senha</label>
+          <input id="senha2" type="password" autocomplete="new-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar nova senha</button>
+      </form>
+
+      <p class="back">Lembrou a senha? <a href="login.html">Entrar</a></p>
+    </div>
+  </div>
+
+  <footer>
+    <p><a href="index.html">Início</a> · <a href="dashboard.html">Dashboard</a></p>
+  </footer>
+
+  <script>
+    const alertEl = document.getElementById('alert');
+    const okEl = document.getElementById('ok');
+
+    function show(el, text) {
+      alertEl.classList.remove('show');
+      okEl.classList.remove('show');
+      el.textContent = text;
+      el.classList.add('show');
+    }
+
+    document.getElementById('findForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = document.getElementById('login').value.trim().toLowerCase();
+      if (q.includes('@') && !/^[a-z0-9._%+-]{1,64}@[a-z0-9.-]+\.[a-z]{2,}$/.test(q)) {
+        show(alertEl, 'E-mail inválido. Confira o formato.');
+        return;
+      }
+      const saved = localStorage.getItem('fila_user');
+      if (!saved) {
+        show(alertEl, 'Nenhuma conta neste navegador. Faça o cadastro primeiro.');
+        return;
+      }
+      const user = JSON.parse(saved);
+      const match = user.login.toLowerCase() === q || user.email.toLowerCase() === q;
+      if (!match) {
+        show(alertEl, 'Login ou e-mail não encontrado.');
+        return;
+      }
+      document.getElementById('findForm').classList.add('hidden');
+      document.getElementById('resetForm').classList.remove('hidden');
+      show(okEl, 'Conta encontrada. Defina a nova senha.');
+    });
+
+    function checarSenha(s) {
+      return {
+        len: s.length >= 8,
+        lower: /[a-z]/.test(s),
+        upper: /[A-Z]/.test(s),
+        num: /\d/.test(s)
+      };
+    }
+
+    function senhaValida(s) {
+      const r = checarSenha(s);
+      return r.len && r.lower && r.upper && r.num;
+    }
+
+    async function hashSenha(s) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    document.getElementById('senha').addEventListener('input', () => {
+      const r = checarSenha(document.getElementById('senha').value);
+      document.querySelectorAll('#senhaRules [data-rule]').forEach(li => {
+        li.classList.toggle('ok', r[li.dataset.rule]);
+      });
+    });
+
+    document.getElementById('resetForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const senha = document.getElementById('senha').value;
+      const senha2 = document.getElementById('senha2').value;
+      if (!senhaValida(senha)) {
+        show(alertEl, 'Use 8+ caracteres, com maiúscula, minúscula e número.');
+        return;
+      }
+      if (senha !== senha2) {
+        show(alertEl, 'As senhas não coincidem.');
+        return;
+      }
+      const saved = JSON.parse(localStorage.getItem('fila_user') || '{}');
+      saved.senhaHash = await hashSenha(senha);
+      localStorage.setItem('fila_user', JSON.stringify(saved));
+      show(okEl, 'Senha atualizada. Redirecionando para o login...');
+      setTimeout(() => { window.location.href = 'login.html?ok=1'; }, 900);
+    });
+  </script>
+</body>
+</html>
